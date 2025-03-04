@@ -1,0 +1,94 @@
+---
+title: "NYC Shooting Data Analysis"
+author: "Daniel South"
+date: "2025-03-03"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(dplyr)
+```
+
+```{r makeDataDir, echo = FALSE}
+
+if(!file.exists("Data")) {
+  print("creating the Data directory")
+  dir.create("Data")
+  }
+```
+
+Violent crime is prevalent in American cities. Violence impacts young people most profoundly, especially young men, who are eight times more likely to be shot than women. New Yorkers aged 18-44 experience the highest incidents of shootings for both men and women.
+
+New York is the largest city in the United States. It's one of the safest American cities in terms of violent crime per capita, but with a population of more than 8 million, violent crime occurs frequently.
+
+This report is based on the *NYPD_Shooting_Incident_Data_Historic_.csv* data set.
+
+NOTE: This report is not meant to be representative of crime rates in all American cities.
+
+```{r readDataFile, echo=FALSE}
+df = read.csv("Data/NYPD_Shooting_Incident_Data__Historic_.csv")
+```
+
+\newpage
+
+## Shootings by Boro (Categorical)
+
+The graph below shows the number of shootings in each of New York City's five boros.  
+  
+The Bronx (Bronx County)  
+Brooklyn (Kings County)  
+Manhattan (New York County)  
+Queens (Queens County)   
+Staten Island (Richmond County)  
+
+```{r barTimeOfDay}
+ggplot(df, aes(x = BORO, fill = BORO)) + geom_bar()
+```
+\newpage
+
+## Shooting Victims by Sex
+
+The vast majority of shooting victims in New York City are male.
+
+```{r pieVictimSex}
+df2 = df %>%
+  group_by(VIC_SEX) %>%
+  count() %>%
+  ungroup()
+ggplot(df2, aes(x = "", y = n, fill = VIC_SEX)) + geom_col() + coord_polar(theta="y")
+```
+
+
+\newpage
+
+## Victim by Age Group and Sex
+
+Victim by age bracket further broken down by sex.
+
+```{r barVicAgeSex}
+df4 = filter(df, VIC_AGE_GROUP!=1022)
+ggplot(df4, aes(x=VIC_AGE_GROUP, fill=VIC_SEX)) + geom_bar()
+```
+
+
+\newpage
+
+## Shootings by Hour of the Day
+
+Most shootings occur between 6 pm and 4 am (18:00 - 04:00).
+
+```{r timeOfDay, message=FALSE}
+df$hourOfTheDay = as.numeric(substr(df$OCCUR_TIME, 1, 2))
+ggplot(data = df, aes(x = hourOfTheDay)) + geom_histogram(fill = "lightblue")
+```
+
+
+\newpage
+## Summary of the Data Set
+
+```{r sumUp}
+summary(df)
+```
+
