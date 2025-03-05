@@ -1,7 +1,7 @@
 ---
 title: "NYC Shooting Data Analysis"
 author: "Daniel South"
-date: "2025-03-03"
+date: "2025-03-04"
 output: pdf_document
 ---
 
@@ -21,7 +21,13 @@ if(!file.exists("Data")) {
 
 Violent crime is prevalent in American cities. Violence impacts young people most profoundly, especially young men, who are eight times more likely to be shot than women. New Yorkers aged 18-44 experience the highest incidents of shootings for both men and women.
 
-New York is the largest city in the United States. It's one of the safest American cities in terms of violent crime per capita, but with a population of more than 8 million, violent crime occurs frequently.
+New York is the largest city in the United States. It's one of the safest American cities in terms of violent crime per capita, but with a population of more than 8 million, violent crime occurs frequently throughout the city's five boroughs.
+
+The Bronx (Bronx County)  
+Brooklyn (Kings County)  
+Manhattan (New York County)  
+Queens (Queens County)   
+Staten Island (Richmond County)  
 
 This report is based on the *NYPD_Shooting_Incident_Data_Historic_.csv* data set.
 
@@ -33,19 +39,30 @@ df = read.csv("Data/NYPD_Shooting_Incident_Data__Historic_.csv")
 
 \newpage
 
-## Shootings by Boro (Categorical)
+## Shootings by Borough (Categorical)
 
-The graph below shows the number of shootings in each of New York City's five boros.  
-  
-The Bronx (Bronx County)  
-Brooklyn (Kings County)  
-Manhattan (New York County)  
-Queens (Queens County)   
-Staten Island (Richmond County)  
+The graph below shows the number of shootings in each of New York City's five boroughs.  
 
 ```{r barTimeOfDay}
 ggplot(df, aes(x = BORO, fill = BORO)) + geom_bar()
 ```
+
+\newpage
+
+## Shootings Per Capita By Borough
+
+Brooklyn has the highest number of shootings, but it also has the larges population of any of the boroughs. The Bronx has nearly as many shootings incidents, but the population is about half that of Brooklyn, so the Bronx stands out as the borough with the highest number of shootings per capita.
+
+Population figures courtesy of Wikipedia per the 2020 US Census.
+
+```{r perCap}
+df_pop = data.frame(BORO=c('BRONX','BROOKLYN','MANHATTAN', 'QUEENS', 'STATEN ISLAND'), shootings=c(8376, 11346, 3762,4271,807), pop=c(1472654, 2736074, 1694251, 2405464, 495747))
+df_pop$shootings_per_cap = df_pop$shootings / df_pop$pop
+
+ggplot(df_pop, aes(x=BORO, y=shootings_per_cap, fill = BORO)) + geom_bar(stat="identity")
+```
+
+
 \newpage
 
 ## Shooting Victims by Sex
